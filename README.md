@@ -1,15 +1,14 @@
 # Mist Live - Roku Client
 
-An unofficial Roku client for [Mist Live](https://mistlive.tv/), letting viewers browse and watch live streams directly on their TV.
+An official Roku client for [Mist Live](https://mistlive.tv/), letting viewers browse and watch live streams directly on their TV.
 
-This project is a rebrand and rework of the original [WeatherRanch channels](https://github.com/weatherranch/channels) Roku app (abandoned), rebuilt to work with Mist Live's API instead.
-
-<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/b7453dc4-fc29-4983-a621-955655b847cd" />
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/c2cdf7d4-52e8-4c08-8108-2d1567aeb0e4" />
 
 
-## Installing Mist Live on Your Roku
+## Installing Mist Live on Your Roku - Channel Store
+Navigate to the Roku Channel Store, and search up "Mist Live", and press Add App to easily install it.
 
-Since this isn't on the Channel Store, you'll need to install it manually. This takes about 5 minutes and only needs to be done once. **Updates will also have to be installed manually.**
+## Installing Mist Live on Your Roku - Sideloading
 
 ### Step 1: Enable Developer Mode
 
@@ -62,10 +61,10 @@ This project is a fork of [weatherranch/channels](https://github.com/weatherranc
 
 ## Disclaimer
 
-This is an independent, unofficial project. It is not affiliated with or endorsed by Roku, Inc. Streams and channel content are provided by Mist Weather Media; this project only provides the Roku client for browsing and viewing them.
+Streams and channel content are provided by Mist Weather Media; this project only provides the Roku client for browsing and viewing them.
 
 ## Contact
 
 Questions or issues:
 [Rukasu Development Server](https://discord.gg/3KvxYqpYdF) on Discord or
-[lucascountyeas+mist@gmail.com](mailto:lucascountyeas+mist@gmail.com)
+[rukasu@mistwx.com](mailto:rukasu@mistwx.com)
