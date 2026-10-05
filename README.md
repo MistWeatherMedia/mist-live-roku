@@ -1,12 +1,11 @@
-# Mist Live - Roku Client
+<h1 align="center">Mist Live - Roku Client</h1>
 
-An official Roku client for [Mist Live](https://mistlive.tv/), letting viewers browse and watch live streams directly on their TV.
-
+<h3 align="center">An official Roku TV client for <a href="https://mistlive.tv/">Mist Live</a>, letting viewers browse and watch live streams directly on their TV.</h3>
 <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/c2cdf7d4-52e8-4c08-8108-2d1567aeb0e4" />
 
 
 ## Installing Mist Live on Your Roku - Channel Store
-Navigate to the Roku Channel Store, and search up "Mist Live", and press Add App to easily install it.
+Navigate to the [Roku Channel Store](https://channelstore.roku.com/details/ab88d14056ce4aafd21b1282bcdbd552:67ae789bb69008018a61fb4bdbf156e8/mist-live), and search up "Mist Live", and press "Add App" to easily install it.
 
 ## Installing Mist Live on Your Roku - Sideloading
 
@@ -66,5 +65,5 @@ Streams and channel content are provided by Mist Weather Media; this project onl
 ## Contact
 
 Questions or issues:
-[Rukasu Development Server](https://discord.gg/3KvxYqpYdF) on Discord or
+[Rukasu Development Server](https://discord.gg/3KvxYqpYdF) on Discord or email me at
 [rukasu@mistwx.com](mailto:rukasu@mistwx.com)
