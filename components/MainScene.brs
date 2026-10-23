@@ -35,7 +35,9 @@ end sub
 function OnkeyEvent(key as String, press as Boolean) as Boolean
     result = false
     if press
-        ' handle "back" key press
+        else if m.videoOverlayActive = true
+        ShowVideoOverlay()
+        result = true
         if key = "back"
             numberOfScreens = m.screenStack.Count()
             ' close top screen if there are two or more screens in the screen stack
