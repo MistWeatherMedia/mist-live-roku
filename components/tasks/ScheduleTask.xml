@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="ScheduleTask" extends="Task">
+    <script type="text/brightscript" uri="ScheduleTask.brs" />
+    <interface>
+        <field id="channelId" type="string" />
+        <field id="result" type="assocarray" />
+    </interface>
+</component>

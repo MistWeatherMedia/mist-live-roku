@@ -147,6 +147,28 @@ sub BuildVideoOverlay(item as Object)
     m.videoOverlay.AppendChild(m.overlayClockShadow)
     m.videoOverlay.AppendChild(m.overlayClock)
 
+    m.epgNowLabel = CreateObject("roSGNode", "Label")
+    m.epgNowLabel.translation = [152, 100]
+    m.epgNowLabel.width = 820
+    m.epgNowLabel.wrap = false
+    m.epgNowLabel.numLines = 1
+    m.epgNowLabel.color = "0xFFFFFFFF"
+    m.epgNowLabel.font = descFont
+    m.epgNowShadow = MakeShadowLabel(m.epgNowLabel)
+    m.videoOverlay.AppendChild(m.epgNowShadow)
+    m.videoOverlay.AppendChild(m.epgNowLabel)
+
+    m.epgNextLabel = CreateObject("roSGNode", "Label")
+    m.epgNextLabel.translation = [152, 124]
+    m.epgNextLabel.width = 820
+    m.epgNextLabel.wrap = false
+    m.epgNextLabel.numLines = 1
+    m.epgNextLabel.color = "0xBBBBBBFF"
+    m.epgNextLabel.font = descFont
+    m.epgNextShadow = MakeShadowLabel(m.epgNextLabel)
+    m.videoOverlay.AppendChild(m.epgNextShadow)
+    m.videoOverlay.AppendChild(m.epgNextLabel)
+
     m.captionOff = AddOverlayButton("pkg:/images/caption.png", 1116, 630, 80, 70)
     m.captionOn = AddOverlayButton("pkg:/images/caption-select.png", 1116, 630, 80, 70)
     m.settingsOff = AddOverlayButton("pkg:/images/settings-cog.png", 1170, 632, 66, 66)
@@ -172,6 +194,11 @@ sub BuildVideoOverlay(item as Object)
     m.fadeTimer.repeat = true
     m.fadeTimer.ObserveField("fire", "OnFadeStep")
 
+    m.overlayTick = 0
+    m.overlayPrograms = invalid
+    m.overlayChannelId = ""
+    if item.id <> invalid and item.id <> "" then RequestOverlaySchedule(item.id)
+
     ShowVideoOverlay()
 end sub
 
@@ -187,6 +214,11 @@ end sub
 sub OnOverlaySecond()
     if m.videoOverlay = invalid then return
     UpdateOverlayClock()
+
+    m.overlayTick = m.overlayTick + 1
+    if m.overlayTick MOD 30 = 0 then RefreshOverlayEPG()
+    if m.overlayTick MOD 1800 = 0 then RequestOverlaySchedule(m.overlayChannelId)
+
     if m.overlayShown = true
         m.overlayIdle = m.overlayIdle + 1
         if m.overlayIdle >= 4
@@ -216,6 +248,7 @@ sub TeardownVideoOverlay()
     m.overlayShown = false
     m.videoOverlayActive = false
     m.overlayFocus = 0
+    m.overlayPrograms = invalid
     if m.clockTimer <> invalid then m.clockTimer.control = "stop"
     if m.fadeTimer <> invalid then m.fadeTimer.control = "stop"
     if m.videoOverlay <> invalid
@@ -319,3 +352,37 @@ function MakeShadowLabel(src as Object) as Object
     shadow.translation = [srcPos[0] + SHADOW_OFFSET, srcPos[1] + SHADOW_OFFSET]
     return shadow
 end function
+
+sub RequestOverlaySchedule(channelId as String)
+    if channelId = "" then return
+    m.overlayChannelId = channelId
+    m.scheduleTask = CreateObject("roSGNode", "ScheduleTask")
+    m.scheduleTask.channelId = channelId
+    m.scheduleTask.ObserveField("result", "OnOverlayScheduleLoaded")
+    m.scheduleTask.control = "run"
+end sub
+
+sub OnOverlayScheduleLoaded(event as Object)
+    if m.videoOverlay = invalid then return
+    r = event.GetData()
+    if r = invalid then return
+    if r.channelId <> m.overlayChannelId then return
+    m.overlayPrograms = r.programs
+    RefreshOverlayEPG()
+end sub
+
+sub RefreshOverlayEPG()
+    if m.videoOverlay = invalid then return
+    if m.epgNowLabel = invalid then return
+    nowText = ""
+    nextText = ""
+    if m.overlayPrograms <> invalid
+        epg = EPGLines(m.overlayPrograms, CreateObject("roDateTime").AsSeconds())
+        nowText = epg.nowText
+        nextText = epg.nextText
+    end if
+    m.epgNowLabel.text = nowText
+    m.epgNowShadow.text = nowText
+    m.epgNextLabel.text = nextText
+    m.epgNextShadow.text = nextText
+end sub

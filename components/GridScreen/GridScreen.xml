@@ -3,6 +3,7 @@
 
 <component name="GridScreen" extends="Group" initialFocus="RowList">
     <script type="text/brightscript" uri="GridScreen.brs" />
+    <script type="text/brightscript" uri="../EPGUtil.brs" />
     <interface>
         <field id="content" type="node" alias="RowList.content" />
         <field id="rowItemSelected" type="intarray" alwaysnotify="true" alias="RowList.rowItemSelected" />

@@ -10,6 +10,7 @@
     <script type="text/brightscript" uri="UILogic/ContentTaskLogic.brs" />
     <script type="text/brightscript" uri="UILogic/GridScreenLogic.brs" />
     <script type="text/brightscript" uri="UILogic/VideoPlayerLogic.brs" />
+    <script type="text/brightscript" uri="pkg:/components/EPGUtil.brs" />
     <children>
         <Font id="loadingFont" uri="pkg:/fonts/arialbi.ttf" size="36" />
         <!-- LoadingIndicator should be visible only in case of waiting for content -->
