@@ -95,13 +95,13 @@ sub BuildVideoOverlay(item as Object)
     topShade.loadDisplayMode = "scaleToFill"
     m.videoOverlay.AppendChild(topShade)
 
-    bottomShade = CreateObject("roSGNode", "Poster")
-    bottomShade.uri = "pkg:/images/shade_bottom.png"
-    bottomShade.translation = [0, 540]
-    bottomShade.width = 1280
-    bottomShade.height = 180
-    bottomShade.loadDisplayMode = "scaleToFill"
-    m.videoOverlay.AppendChild(bottomShade)
+    cornerShade = CreateObject("roSGNode", "Poster")
+    cornerShade.uri = "pkg:/images/shade_bottom_right.png"
+    cornerShade.translation = [0, 0]
+    cornerShade.width = 1280
+    cornerShade.height = 720
+    cornerShade.loadDisplayMode = "scaleToFill"
+    m.videoOverlay.AppendChild(cornerShade)
 
     m.overlayIcon = CreateObject("roSGNode", "Poster")
     m.overlayIcon.translation = [64, 32]
@@ -118,6 +118,7 @@ sub BuildVideoOverlay(item as Object)
     title.color = "0xFFFFFFFF"
     title.font = titleFont
     title.text = item.title
+    m.videoOverlay.AppendChild(MakeShadowLabel(title))
     m.videoOverlay.AppendChild(title)
 
     descText = item.description
@@ -132,6 +133,7 @@ sub BuildVideoOverlay(item as Object)
     desc.color = "0xDDDDDDFF"
     desc.font = descFont
     desc.text = descText
+    m.videoOverlay.AppendChild(MakeShadowLabel(desc))
     m.videoOverlay.AppendChild(desc)
 
     ' clocl
@@ -141,7 +143,17 @@ sub BuildVideoOverlay(item as Object)
     m.overlayClock.horizAlign = "right"
     m.overlayClock.color = "0xFFFFFFFF"
     m.overlayClock.font = titleFont
+    m.overlayClockShadow = MakeShadowLabel(m.overlayClock)
+    m.videoOverlay.AppendChild(m.overlayClockShadow)
     m.videoOverlay.AppendChild(m.overlayClock)
+
+    m.captionOff = AddOverlayButton("pkg:/images/caption.png", 1116, 630, 80, 70)
+    m.captionOn = AddOverlayButton("pkg:/images/caption-select.png", 1116, 630, 80, 70)
+    m.settingsOff = AddOverlayButton("pkg:/images/settings-cog.png", 1170, 632, 66, 66)
+    m.settingsOn = AddOverlayButton("pkg:/images/settings-cog-select.png", 1170, 632, 66, 66)
+    m.overlayFocus = 0 ' 0 = nothing highlighted, 1 = captions, 2 = settings
+    UpdateOverlayButtons()
+
     m.top.AppendChild(m.videoOverlay)
 
     m.videoPlayer.enableUI = false
@@ -177,7 +189,7 @@ sub OnOverlaySecond()
     UpdateOverlayClock()
     if m.overlayShown = true
         m.overlayIdle = m.overlayIdle + 1
-        if m.overlayIdle >= 4 ' fadeout timer
+        if m.overlayIdle >= 4
             m.overlayShown = false
             m.fadeTimer.control = "start"
         end if
@@ -194,6 +206,8 @@ sub OnFadeStep()
         opacity = 0
         m.videoOverlay.visible = false
         m.fadeTimer.control = "stop"
+        m.overlayFocus = 0
+        UpdateOverlayButtons()
     end if
     m.videoOverlay.opacity = opacity
 end sub
@@ -201,6 +215,7 @@ end sub
 sub TeardownVideoOverlay()
     m.overlayShown = false
     m.videoOverlayActive = false
+    m.overlayFocus = 0
     if m.clockTimer <> invalid then m.clockTimer.control = "stop"
     if m.fadeTimer <> invalid then m.fadeTimer.control = "stop"
     if m.videoOverlay <> invalid
@@ -231,5 +246,76 @@ sub UpdateOverlayClock()
     else
         minStr = mins.ToStr()
     end if
-    m.overlayClock.text = hours.ToStr() + ":" + minStr + " " + suffix
+    clockText = hours.ToStr() + ":" + minStr + " " + suffix
+    m.overlayClock.text = clockText
+    if m.overlayClockShadow <> invalid then m.overlayClockShadow.text = clockText
 end sub
+
+function AddOverlayButton(uri as String, x as Integer, y as Integer, w as Integer, h as Integer) as Object
+    btn = CreateObject("roSGNode", "Poster")
+    btn.uri = uri
+    btn.translation = [x, y]
+    btn.width = w
+    btn.height = h
+    btn.loadDisplayMode = "scaleToFit"
+    m.videoOverlay.AppendChild(btn)
+    return btn
+end function
+
+sub UpdateOverlayButtons()
+    if m.captionOff = invalid then return
+    m.captionOn.visible = (m.overlayFocus = 1)
+    m.captionOff.visible = (m.overlayFocus <> 1)
+    m.settingsOn.visible = (m.overlayFocus = 2)
+    m.settingsOff.visible = (m.overlayFocus <> 2)
+end sub
+
+sub HandleOverlayKey(key as String)
+    if m.videoOverlay = invalid then return
+
+    wasShown = (m.overlayShown = true)
+    ShowVideoOverlay()
+    if wasShown = false then return
+
+    if key = "down"
+        if m.overlayFocus = 0 then m.overlayFocus = 1
+    else if key = "up"
+        m.overlayFocus = 0
+    else if key = "left"
+        if m.overlayFocus = 2 or m.overlayFocus = 0 then m.overlayFocus = 1
+    else if key = "right"
+        if m.overlayFocus = 1
+            m.overlayFocus = 2
+        else if m.overlayFocus = 0
+            m.overlayFocus = 1
+        end if
+    else if key = "OK"
+        if m.overlayFocus = 1 then OnCaptionsSelected()
+        if m.overlayFocus = 2 then OnSettingsSelected()
+    end if
+
+    UpdateOverlayButtons()
+end sub
+
+sub OnCaptionsSelected()
+    print "[OVERLAY] Captions button selected"
+end sub
+
+sub OnSettingsSelected()
+    print "[OVERLAY] Settings button selected"
+end sub
+
+function MakeShadowLabel(src as Object) as Object
+    SHADOW_OFFSET = 2
+    shadow = CreateObject("roSGNode", "Label")
+    shadow.font = src.font
+    shadow.width = src.width
+    shadow.wrap = src.wrap
+    shadow.numLines = src.numLines
+    shadow.horizAlign = src.horizAlign
+    shadow.text = src.text
+    shadow.color = "0x000000AA"
+    srcPos = src.translation
+    shadow.translation = [srcPos[0] + SHADOW_OFFSET, srcPos[1] + SHADOW_OFFSET]
+    return shadow
+end function

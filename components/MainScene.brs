@@ -36,6 +36,8 @@ function OnkeyEvent(key as String, press as Boolean) as Boolean
     result = false
     if press
         else if m.videoOverlayActive = true
+            HandleOverlayKey(key)
+            result = true
         ShowVideoOverlay()
         result = true
         if key = "back"
