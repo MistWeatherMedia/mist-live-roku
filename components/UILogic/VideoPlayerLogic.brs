@@ -30,6 +30,7 @@ sub PlayStream(url as String)
     m.videoPlayer.control = "play"
     m.videoPlayer.ObserveField("state", "OnVideoPlayerStateChange")
     m.videoPlayer.ObserveField("visible", "OnVideoVisibleChange")
+    m.videoPlayer.ObserveField("availableSubtitleTracks", "OnSubtitleTracksChanged")
 
     ' memory check timer every 15 minutes (created once)
     if m.memTimer = invalid
@@ -118,7 +119,7 @@ sub BuildVideoOverlay(item as Object)
     title.color = "0xFFFFFFFF"
     title.font = titleFont
     title.text = item.title
-    m.videoOverlay.AppendChild(MakeShadowLabel(title))
+    m.videoOverlay.AppendChild(MakeShadowLabel(title)) ' shadow first so it draws behind
     m.videoOverlay.AppendChild(title)
 
     descText = item.description
@@ -148,7 +149,7 @@ sub BuildVideoOverlay(item as Object)
     m.videoOverlay.AppendChild(m.overlayClock)
 
     m.epgNowLabel = CreateObject("roSGNode", "Label")
-    m.epgNowLabel.translation = [152, 100]
+    m.epgNowLabel.translation = [152, 108]
     m.epgNowLabel.width = 820
     m.epgNowLabel.wrap = false
     m.epgNowLabel.numLines = 1
@@ -159,7 +160,7 @@ sub BuildVideoOverlay(item as Object)
     m.videoOverlay.AppendChild(m.epgNowLabel)
 
     m.epgNextLabel = CreateObject("roSGNode", "Label")
-    m.epgNextLabel.translation = [152, 124]
+    m.epgNextLabel.translation = [152, 132]
     m.epgNextLabel.width = 820
     m.epgNextLabel.wrap = false
     m.epgNextLabel.numLines = 1
@@ -168,6 +169,16 @@ sub BuildVideoOverlay(item as Object)
     m.epgNextShadow = MakeShadowLabel(m.epgNextLabel)
     m.videoOverlay.AppendChild(m.epgNextShadow)
     m.videoOverlay.AppendChild(m.epgNextLabel)
+
+    m.captionStatus = CreateObject("roSGNode", "Label")
+    m.captionStatus.translation = [816, 598]
+    m.captionStatus.width = 400
+    m.captionStatus.horizAlign = "right"
+    m.captionStatus.color = "0xFFFFFFFF"
+    m.captionStatus.font = descFont
+    m.captionStatusShadow = MakeShadowLabel(m.captionStatus)
+    m.videoOverlay.AppendChild(m.captionStatusShadow)
+    m.videoOverlay.AppendChild(m.captionStatus)
 
     m.captionOff = AddOverlayButton("pkg:/images/caption.png", 1116, 630, 80, 70)
     m.captionOn = AddOverlayButton("pkg:/images/caption-select.png", 1116, 630, 80, 70)
@@ -240,6 +251,7 @@ sub OnFadeStep()
         m.fadeTimer.control = "stop"
         m.overlayFocus = 0
         UpdateOverlayButtons()
+        SetCaptionStatus("")
     end if
     m.videoOverlay.opacity = opacity
 end sub
@@ -331,11 +343,49 @@ sub HandleOverlayKey(key as String)
 end sub
 
 sub OnCaptionsSelected()
-    print "[OVERLAY] Captions button selected"
+    if m.videoPlayer = invalid then return
+
+    tracks = m.videoPlayer.availableSubtitleTracks
+    if tracks = invalid then tracks = []
+
+    choices = []
+    for each t in tracks
+        label = ""
+        if t.Description <> invalid then label = t.Description
+        if label = "" and t.Language <> invalid then label = t.Language
+        if label = "" then label = t.TrackName
+        choices.Push({ track: t.TrackName, label: label })
+    end for
+    if choices.Count() = 0
+        print "[CAPTIONS] stream reported no tracks - trying in-band CC1 (eia608/1)"
+        choices.Push({ track: "eia608/1", label: "CC1" })
+    end if
+
+    cur = -1
+    if m.videoPlayer.globalCaptionMode = "On"
+        cur = 0
+        for i = 0 to choices.Count() - 1
+            if choices[i].track = m.videoPlayer.subtitleTrack then cur = i
+        end for
+    end if
+
+    nextIdx = cur + 1
+    if nextIdx >= choices.Count() then nextIdx = -1
+
+    if nextIdx = -1
+        m.videoPlayer.globalCaptionMode = "Off"
+        SetCaptionStatus("Captions: Off")
+        print "[CAPTIONS] off"
+    else
+        m.videoPlayer.subtitleTrack = choices[nextIdx].track
+        m.videoPlayer.globalCaptionMode = "On"
+        SetCaptionStatus("Captions: " + choices[nextIdx].label)
+        print "[CAPTIONS] on -> "; choices[nextIdx].track
+    end if
 end sub
 
 sub OnSettingsSelected()
-    print "[OVERLAY] Settings button selected"
+    print "[OVERLAY] Settings button selected (no action wired up yet)"
 end sub
 
 function MakeShadowLabel(src as Object) as Object
@@ -385,4 +435,20 @@ sub RefreshOverlayEPG()
     m.epgNowShadow.text = nowText
     m.epgNextLabel.text = nextText
     m.epgNextShadow.text = nextText
+end sub
+
+sub OnSubtitleTracksChanged()
+    if m.videoPlayer = invalid then return
+    tracks = m.videoPlayer.availableSubtitleTracks
+    if tracks = invalid then return
+    print "[CAPTIONS] "; tracks.Count(); " track(s) reported | captionMode = "; m.videoPlayer.globalCaptionMode
+    for each t in tracks
+        print "[CAPTIONS]   TrackName="; t.TrackName; "  Language="; t.Language; "  Description="; t.Description
+    end for
+end sub
+
+sub SetCaptionStatus(text as String)
+    if m.captionStatus = invalid then return
+    m.captionStatus.text = text
+    m.captionStatusShadow.text = text
 end sub
