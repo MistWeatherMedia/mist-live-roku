@@ -16,5 +16,6 @@
             loadWidth="120"
             loadHeight="120"
         />
+        <Rectangle id="divider" translation="[-11,0]" width="2" height="120" color="0xFFFFFF66" visible="false" />
     </children>
 </component>

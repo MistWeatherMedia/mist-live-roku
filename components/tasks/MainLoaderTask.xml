@@ -7,4 +7,6 @@
     </interface>
 
     <script type="text/brightscript" uri="MainLoaderTask.brs" />
+    <script type="text/brightscript" uri="MainLoaderTask.brs" />
+    <script type="text/brightscript" uri="../FavoritesUtil.brs" />
 </component>

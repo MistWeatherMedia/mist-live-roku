@@ -18,12 +18,13 @@ sub ShowChannelRSGScreen(args as Dynamic)
     input = CreateObject("roInput")
     input.SetMessagePort(m.port)
     scene = screen.CreateScene("MainScene")
+    scene.ObserveField("exitApp", m.port) ' the sleep timer sets this to close the channel
     screen.Show() ' Init method in MainScene.brs is invoked
     scene.signalBeacon("AppLaunchComplete")
 
     if args <> invalid
         if args.contentId <> invalid or args.mediaType <> invalid
-            scene.launchArgs = args
+            scene.deepLinkArgs = args
         end if
     end if
 
@@ -34,11 +35,14 @@ sub ShowChannelRSGScreen(args as Dynamic)
         msgType = type(msg)
         if msgType = "roSGScreenEvent"
             if msg.IsScreenClosed() then return
+        else if msgType = "roSGNodeEvent"
+            ' the scene asked to close the channel (sleep timer)
+            if msg.GetField() = "exitApp" then return
         else if msgType = "roInputEvent"
             if msg.IsInput()
                 info = msg.GetInfo()
                 if info <> invalid and info.contentId <> invalid
-                    scene.launchArgs = info
+                    scene.deepLinkArgs = info
                 end if
             end if
         end if

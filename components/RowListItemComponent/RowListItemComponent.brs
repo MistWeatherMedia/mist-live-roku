@@ -10,6 +10,7 @@ sub OnContentSet()
     ' set poster uri if content is valid
     if content <> invalid 
         m.top.FindNode("poster").uri = content.icon
+        m.top.FindNode("divider").visible = (content.dividerBefore = true)
     end if
 end sub
 

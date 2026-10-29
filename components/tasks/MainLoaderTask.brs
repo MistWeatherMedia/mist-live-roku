@@ -37,7 +37,20 @@ sub GetContent()
 
         'allphabeticallyj
         items = SortItemsByTitle(items)
-    else
+        favItems = []
+        for each it in items
+            if IsFavorite(it.id)
+                favCopy = {}
+                favCopy.Append(it) ' a separate copy, so the divider flag below can't leak onto it
+                favItems.Push(favCopy)
+            end if
+        end for
+        if favItems.Count() > 0 and items.Count() > 0 then items[0].dividerBefore = true
+        combined = []
+        combined.Append(favItems)
+        combined.Append(items)
+        items = combined
+        else
         print "ParseJson failed - response was not a valid JSON array"
     end if
 
@@ -142,7 +155,7 @@ end function
 function ResolveIconUrl(iconUuid as Dynamic) as String
     if iconUuid = invalid then return "pkg:/images/fallback_icon.png"
 
-    url = "https://api.mistlive.tv/api/v1.5/image/" + iconUuid + "?width=256&height=256&fit=inside"
+    url = "https://api.mistlive.tv/api/v1.5/image/" + iconUuid + "?width=256&height=256&fit=inside&format=png"
 
     rsp = FetchString(url)
 
