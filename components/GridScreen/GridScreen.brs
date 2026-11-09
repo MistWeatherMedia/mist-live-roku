@@ -76,6 +76,11 @@ sub Init()
 end sub
 
 sub UpdateGridEPG()
+    if Left(m.focusedChannelId, 2) = "__"
+    m.epgNowLabel.text = ""
+    m.epgNextLabel.text = ""
+return
+    end if
     entry = m.epgCache[m.focusedChannelId]
     if entry <> invalid
         ApplyGridEPG()

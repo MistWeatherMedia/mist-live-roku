@@ -48,6 +48,11 @@ function OnkeyEvent(key as String, press as Boolean) as Boolean
                     result = true
                 end if
             end if
+        else if key = "options" and m.videoOverlayActive <> true
+            if m.GridScreen <> invalid and m.GridScreen.visible = true
+                ShowChannelIdDialog("", "")
+                result = true
+            end if        
         else if m.videoOverlayActive = true
             HandleOverlayKey(key)
             result = true

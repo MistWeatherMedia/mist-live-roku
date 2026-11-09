@@ -53,7 +53,13 @@ sub GetContent()
         else
         print "ParseJson failed - response was not a valid JSON array"
     end if
-
+        items.Push({
+            id: "__add__",
+            title: "Enter Channel ID",
+            description: "Watch a private/unlisted channel by typing its channel ID. For example, ""wlce"" is used for WiderScan 24/7"
+            icon: "pkg:/images/add_channel.png",
+            hdPosterURL: "pkg:/images/privatestream.png"
+        })
     row = {}
     row.title = "All Channels"
     row.children = items
