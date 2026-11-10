@@ -4,7 +4,7 @@ sub ShowChannelIdDialog(message as String, prefill as String)
     if message <> ""
         dlg.message = [message]
     else
-        dlg.message = ["Type a channel's ID to watch a private channel."]
+        dlg.message = ["Type a channel's ID to watch a private/unlisted channel."]
     end if
     dlg.text = prefill
     dlg.buttons = ["Watch", "Cancel"]
@@ -74,8 +74,7 @@ sub PlayPrivateChannel(channelId as String)
     item.Update({
         id: channelId,
         title: channelId,
-        description: "Private channel",
-        icon: "pkg:/images/fallback_icon.png",
+        icon: "pkg:/images/homescreen/fallback_icon.png",
         url: "https://watch.mistlive.tv/hls/" + channelId + "/playlist.m3u8",
         streamFormat: "hls"
     }, true)

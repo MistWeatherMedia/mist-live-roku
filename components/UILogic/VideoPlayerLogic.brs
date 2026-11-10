@@ -98,7 +98,7 @@ sub BuildVideoOverlay(item as Object)
 
     m.videoOverlay = CreateObject("roSGNode", "Group")
     topShade = CreateObject("roSGNode", "Poster")
-    topShade.uri = "pkg:/images/shade_top.png"
+    topShade.uri = "pkg:/images/videoplayer/shade_top.png"
     topShade.translation = [0, 0]
     topShade.width = 1280
     topShade.height = 180
@@ -106,7 +106,7 @@ sub BuildVideoOverlay(item as Object)
     m.videoOverlay.AppendChild(topShade)
 
     cornerShade = CreateObject("roSGNode", "Poster")
-    cornerShade.uri = "pkg:/images/shade_bottom_right.png"
+    cornerShade.uri = "pkg:/images/videoplayer/shade_bottom_right.png"
     cornerShade.translation = [0, 0]
     cornerShade.width = 1280
     cornerShade.height = 720
@@ -189,10 +189,10 @@ sub BuildVideoOverlay(item as Object)
     m.videoOverlay.AppendChild(m.captionStatusShadow)
     m.videoOverlay.AppendChild(m.captionStatus)
 
-    m.captionOff = AddOverlayButton("pkg:/images/caption.png", 1116, 630, 80, 70)
-    m.captionOn = AddOverlayButton("pkg:/images/caption-select.png", 1116, 630, 80, 70)
-    m.settingsOff = AddOverlayButton("pkg:/images/settings-cog.png", 1170, 632, 66, 66)
-    m.settingsOn = AddOverlayButton("pkg:/images/settings-cog-select.png", 1170, 632, 66, 66)
+    m.captionOff = AddOverlayButton("pkg:/images/videoplayer/caption.png", 1116, 630, 80, 70)
+    m.captionOn = AddOverlayButton("pkg:/images/videoplayer/caption-select.png", 1116, 630, 80, 70)
+    m.settingsOff = AddOverlayButton("pkg:/images/videoplayer/settings-cog.png", 1170, 632, 66, 66)
+    m.settingsOn = AddOverlayButton("pkg:/images/videoplayer/settings-cog-select.png", 1170, 632, 66, 66)
     m.overlayFocus = 0 ' 0 = nothing highlighted, 1 = captions, 2 = settings
     UpdateOverlayButtons()
 
@@ -300,7 +300,7 @@ end sub
 sub OnOverlayIconStatus()
     if m.overlayIcon = invalid then return
     if m.overlayIcon.loadStatus = "failed"
-        m.overlayIcon.uri = "pkg:/images/fallback_icon.png"
+        m.overlayIcon.uri = "pkg:/images/homescreen/fallback_icon.png"
     end if
 end sub
 

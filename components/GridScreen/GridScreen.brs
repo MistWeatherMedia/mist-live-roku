@@ -119,7 +119,7 @@ end sub
 
 sub OnThumbnailLoadStatusChange()
     if m.thumbnailImage.loadStatus = "failed"
-        m.thumbnailImage.uri = "https://file.garden/anfFhGxO-geaMQ6-/thumbnailfail.png"
+        m.thumbnailImage.uri = "pkg:/images/homescreen/thumbnailfail.jpg"
     end if
 end sub
 

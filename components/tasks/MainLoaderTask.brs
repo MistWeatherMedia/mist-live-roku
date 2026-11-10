@@ -57,8 +57,8 @@ sub GetContent()
             id: "__add__",
             title: "Enter Channel ID",
             description: "Watch a private/unlisted channel by typing its channel ID. For example, ""wlce"" is used for WiderScan 24/7"
-            icon: "pkg:/images/add_channel.png",
-            hdPosterURL: "pkg:/images/privatestream.png"
+            icon: "pkg:/images/homescreen/add_channel.png",
+            hdPosterURL: "pkg:/images/homescreen/privatestream.jpg"
         })
     row = {}
     row.title = "All Channels"
@@ -159,7 +159,7 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
 end function
 
 function ResolveIconUrl(iconUuid as Dynamic) as String
-    if iconUuid = invalid then return "pkg:/images/fallback_icon.png"
+    if iconUuid = invalid then return "pkg:/images/homescreen/fallback_icon.png"
 
     url = "https://api.mistlive.tv/api/v1.5/image/" + iconUuid + "?width=256&height=256&fit=inside&format=png"
 
@@ -168,7 +168,7 @@ function ResolveIconUrl(iconUuid as Dynamic) as String
     if Len(rsp) > 5
         firstChars = LCase(Left(rsp, 5))
         if firstChars = "<?xml" or firstChars = "<svg "
-            return "pkg:/images/fallback_icon.png"
+            return "pkg:/images/homescreen/fallback_icon.png"
         end if
     end if
 
