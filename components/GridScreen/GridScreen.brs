@@ -73,6 +73,30 @@ sub Init()
     m.epgDebounce.duration = 0.35
     m.epgDebounce.repeat = false
     m.epgDebounce.ObserveField("fire", "OnEPGDebounce")
+
+    m.rowFadeLeft = CreateObject("roSGNode", "Poster")
+    m.rowFadeLeft.uri = "pkg:/images/homescreen/row_fade_left.png"
+    m.rowFadeLeft.translation = [30, 100]
+    m.rowFadeLeft.width = 100
+    m.rowFadeLeft.height = 160
+    m.rowFadeLeft.loadDisplayMode = "scaleToFill"
+    m.rowFadeLeft.visible = false
+    m.top.AppendChild(m.rowFadeLeft)
+
+    m.rowFadeRight = CreateObject("roSGNode", "Poster")
+    m.rowFadeRight.uri = "pkg:/images/homescreen/row_fade_right.png"
+    m.rowFadeRight.translation = [1080, 100]
+    m.rowFadeRight.width = 100
+    m.rowFadeRight.height = 160
+    m.rowFadeRight.loadDisplayMode = "scaleToFill"
+    m.rowFadeRight.visible = false
+    m.top.AppendChild(m.rowFadeRight)
+end sub
+
+sub UpdateRowFades(index as Integer, total as Integer)
+    if m.rowFadeLeft = invalid then return
+    m.rowFadeLeft.visible = (index > 0)
+    m.rowFadeRight.visible = (total - 1 - index >= 6)
 end sub
 
 sub UpdateGridEPG()
@@ -137,6 +161,7 @@ sub OnItemFocused()
     if row = invalid then return
     item = row.GetChild(focusedIndex[1])
     if item = invalid then return
+    UpdateRowFades(focusedIndex[1], row.GetChildCount())
 
     m.descriptionLabel.text = item.description
     m.titleLabel.text = item.title

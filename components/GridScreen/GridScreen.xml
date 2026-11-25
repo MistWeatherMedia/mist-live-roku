@@ -19,17 +19,17 @@
             loadDisplayMode="scaleToFit"
         />
         <RowList
-            itemComponentName="RowListItemComponent"
-            id="rowList"
-            translation="[80,120]"
-            numRows="1"
-            rowitemSize="[[120,120]]"
-            rowItemSpacing="[[20,0]]"
-            itemSize="[1100,1100]"
-            rowLabelOffset="[[50,0]]"
-            focusXOffset="[50]"
-            showRowLabel="[false]"
-            rowFocusAnimationStyle="fixedfocus"
-        />
+         itemComponentName="RowListItemComponent"
+         id="rowList"
+         translation="[30,120]"
+         numRows="1"
+         rowitemSize="[[120,120]]"
+         rowItemSpacing="[[20,0]]"
+         itemSize="[1150,1100]"
+         rowLabelOffset="[[50,0]]"
+         focusXOffset="[100]"
+         showRowLabel="[false]"
+        rowFocusAnimationStyle="fixedfocus"
+     />
     </children>
 </component>
