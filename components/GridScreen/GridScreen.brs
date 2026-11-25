@@ -80,7 +80,7 @@ sub Init()
     m.rowFadeLeft.width = 100
     m.rowFadeLeft.height = 160
     m.rowFadeLeft.loadDisplayMode = "scaleToFill"
-    m.rowFadeLeft.visible = false
+    m.rowFadeLeft.visible = true
     m.top.AppendChild(m.rowFadeLeft)
 
     m.rowFadeRight = CreateObject("roSGNode", "Poster")
@@ -89,14 +89,14 @@ sub Init()
     m.rowFadeRight.width = 100
     m.rowFadeRight.height = 160
     m.rowFadeRight.loadDisplayMode = "scaleToFill"
-    m.rowFadeRight.visible = false
+    m.rowFadeRight.visible = true
     m.top.AppendChild(m.rowFadeRight)
 end sub
 
 sub UpdateRowFades(index as Integer, total as Integer)
     if m.rowFadeLeft = invalid then return
-    m.rowFadeLeft.visible = (index > 0)
-    m.rowFadeRight.visible = (total - 1 - index >= 6)
+    m.rowFadeLeft.visible = true
+    m.rowFadeRight.visible = true
 end sub
 
 sub UpdateGridEPG()
